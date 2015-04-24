@@ -1,0 +1,66 @@
+﻿@{
+    ViewBag.Title = "Products";
+}
+
+<h2>Products</h2>
+<div style="padding: 5px; float: left;width: 20%">
+    <ul class="easyui-tree">
+        <li>
+            <span>产品</span>
+            <ul>
+                <li data-options="state:''">
+                    <span>中央空调自控产品</span>
+                    <ul>
+                        <li>
+                            <span>温控器</span>
+                        </li>
+                        <li>
+                            <span>电动执行器</span>
+                        </li>
+                        <li>
+                            <span>电机</span>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <span>全面水力平衡控制</span>
+                </li>
+                <li>
+                    <span>暖通监控及计费系统</span>
+                    <ul>
+                        <li>超声波类</li>
+                        <li>机械式</li>
+                    </ul>
+                </li>
+                <li>index.html</li>
+                <li>about.html</li>
+                <li>welcome.html</li>
+            </ul>
+        </li>
+    </ul>
+</div>
+<div style="float: right; width: 75%; background-color: red;height: 100px" ></div>
+
+@Styles.Render("~/Content/easyuicssdetail")
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/jeasyuidetail")
+<script src="@Url.Content("~/Scripts/jquery-easyui-1.4/jquery.easyui.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery-easyui-1.4/jquery.min.js")" type="text/javascript"></script>
+
+<script type="text/javascript" defer="defer">
+    $.post("/home/GetProducts", {}, function (data, textStatus, jqXhr) {
+
+    });
+
+
+    $(function () {
+        //$('#tt').treegrid({
+        //    url: '/home/GetProducts',
+        //    idField: 'ID',
+        //    treeField: 'Cnname',
+        //    columns: [[
+        //        { field: 'Cnname', title: '名字', width: 180 }
+        //    ]]
+        //});
+    });
+</script>
