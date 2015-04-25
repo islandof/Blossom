@@ -47,7 +47,7 @@ namespace BlossomWeb
 
             bundles.Add(new StyleBundle("~/Content/easyuicssdetail").Include(
                 "~/Scripts/jquery-easyui-1.4/demo/demo.css",
-                "~/Scripts/jquery-easyui-1.4/themes/default/easyui.css",
+                "~/Scripts/jquery-easyui-1.4/themes/gray/easyui.css",
                 "~/Scripts/jquery-easyui-1.4/themes/icon.css"));
 
         }

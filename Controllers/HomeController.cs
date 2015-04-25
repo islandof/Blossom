@@ -54,11 +54,8 @@ namespace BlossomWeb.Controllers
 
         public ActionResult SaveProduct()
         {
-            var sql = "";
-            if (!Request.Form["Cnname"].IsNullOrWhiteSpace())
-            {
-                sql = Request.Form["Cnname"];
-            }
+            var sql = "";            
+
             if (Request.Files.Count > 0)
             {
                 var file = Request.Files[0];
@@ -75,6 +72,70 @@ namespace BlossomWeb.Controllers
                     file.SaveAs(Server.MapPath(@"\UploadFile\\newfile"));
                 }
             }
+
+            string[] imglist = new string[4];
+            for(var i =0;i<Request.Files.Count;i++)
+            {
+                var file = Request.Files[i];
+                var imgname = "";
+                if (file.ContentLength != 0)
+                {
+
+                    imgname = System.Guid.NewGuid().ToString().Substring(0, 8) + file.FileName;
+                    file.SaveAs(Server.MapPath(@"\UploadFile\\" + imgname));
+                }
+                imglist[i] = imgname;
+            }
+
+            if (!Request.Form["ID"].IsNullOrWhiteSpace())
+            {
+                sql = "update products set Cnname = '" + Request.Form["Cnname"] + "', Enname = '" +
+                      Request.Form["Enname"] + "', _parentId = '" + Request.Form["_parentId"] + "', Icon = '" +
+                      imglist[0] + "', Firstimg = '" + imglist[1] + "', Secondimg = '" + imglist[2] + "', Thirdimg = '" +
+                      imglist[3] + "' where ID = " + Request["ID"];
+            }
+            else
+            {
+                sql = "insert into Products (Cnname,Enname,_parentId,Icon,Firstimg,Secondimg,Thirdimg) values( '" + Request.Form["Cnname"] + "', '" +
+                  Request.Form["Enname"] + "', '" + Request.Form["_parentId"] + "', '" + imglist[0] + "', '" + imglist[1] + "', '" + imglist[2] + "', '" + imglist[3] + "' )";    
+            }
+            
+            var conn = new OleDbConnection(ConnStr1);
+
+            conn.Open();
+
+            var cmd = new OleDbCommand(sql, conn);
+            cmd.ExecuteNonQuery();
+            conn.Close();
+
+
+            return this.JsonFormat("");
+        }
+
+        public ActionResult GetProduct()
+        {
+            var conn = new OleDbConnection(ConnStr1);
+
+            conn.Open();
+            var sql = "select * from Products where ID = " + Request["ID"];
+            var myadapter = new OleDbDataAdapter(sql, conn);
+            var dt = new DataTable();
+            myadapter.Fill(dt);
+
+            return this.JsonFormat(dt);
+        }
+
+        public ActionResult DeleteProduct()
+        {
+            var sql = "Delete from  Products where ID = " + Request["ID"];
+
+            var conn = new OleDbConnection(ConnStr1);
+
+            conn.Open();
+
+            var cmd = new OleDbCommand(sql, conn);
+            cmd.ExecuteNonQuery();
+            conn.Close();
             return this.JsonFormat("");
         }
 

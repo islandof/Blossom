@@ -27,32 +27,41 @@
                     </div>
 
                     <div>
-                        <label>上一级:</label>
-                        <input class="easyui-textbox" type="text" name="_parentId" />
-                        <input id="cc1" class="easyui-combobox" data-options="
-                        valueField: 'id',
-                        textField: 'text',
-                        url: 'get_data1.php',
-                        onSelect: function(rec){
-                        var url = 'get_data2.php?id='+rec.id;
-                        $('#cc2').combobox('reload', url);
-                }" />  
+                        <label>上一级:</label>                        
+                        <input class="easyui-combobox" name="_parentId" data-options="
+				            url: '/home/GetProducts',
+				            method: 'get',                            
+				            valueField: 'ID',
+				            textField: 'Cnname',
+				            panelWidth: 200,
+				            panelHeight: 200,
+                            loadFilter:loadFilter,                            
+                            editable:false
+			            " />
                     </div>
                     <div>
                         <label>小图标:</label>
-                        <input class="easyui-filebox" name="Icon" />
+                        <input class="textbox" name="Icon" readonly="readonly"/><br/>
+                        <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                        <input class="easyui-filebox" name="Icon1" />
                     </div>
                     <div>
                         <label>第一张:</label>
-                        <input class="easyui-filebox" name="Firstimg" />
+                        <input class="textbox" name="Firstimg" readonly="readonly"/><br />
+<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                        <input class="easyui-filebox" name="Firstimg1" />
                     </div>
                     <div>
                         <label>第二张:</label>
-                        <input class="easyui-filebox" name="Secondimg" />
+                        <input class="textbox" name="Secondimg" readonly="readonly"/><br />
+<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                        <input class="easyui-filebox" name="Secondimg1" />
                     </div>
                     <div>
                         <label>第三张:</label>
-                        <input class="easyui-filebox" name="Thirdimg" />
+                        <input class="textbox" name="Thirdimg" readonly="readonly"/><br />
+<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                        <input class="easyui-filebox" name="Thirdimg1" />
                     </div>
                     <input type="hidden" name="ID" value="" />
                 </form>
@@ -72,7 +81,10 @@
             var mainForm = $('#fItem');
 
             if (!isAddNew) {
-                $('#fItem').form('load','/vehicle/getproduct?ID='+currentID);
+                $('#fItem').form('load', '/home/getproduct?ID=' + currentID);
+                $.post('/home/getproduct?ID=' + currentID, {}, function (data, textStatus, jqXhr) {
+                    $('#fItem').form('load', data[0]);
+                });
             }
 
             function submitForm() {
@@ -83,61 +95,22 @@
                         // return false to prevent submit;    
                     },    
                     success:function(data) {
-                        alert(data);
+                        alert("保存成功");
+                        self.close();
                     }    
                 });  
-
-                //var v = $('#fItem').form('validate'); //
-                //if (!v)
-                //    return false;
-
-                //var options = {};
-                //options.url = "/home/SaveProduct";
-                //options.data = $("#fItem").serialize();
-                //options.loading = "正在处理中...";
-                //options.loadingParentID = "fItem";
-                //options.success = function(data, message) {
-                //    alert("保存成功");
-                //};
-                //gqajax(options);
-                //return false;
             }
 
             function clearForm() {
                 $('#fItem').form('clear');
             }
 
-            function gqajax (options) {
-                var p = options || {};
-                //  var ashxUrl = options.ashxUrl || "/Admin/User/";
-                //   var url = p.url || ashxUrl + $.param({ method: p.method });
-                var targetID = options.loadingParentID; //表示加载进度条的父类节点
 
-                $.ajax({
-                    cache: false,
-                    async: options.async == null || options.async ? true : false,
-                    url: p.url,
-                    data: p.data,
-                    dataType: 'json',
-                    type: 'post',
-                    success: function (result) {
-                        if (!result) return;
-                        if (!result.IsError) {
-                            if (p.success)
-                                p.success(result.Data, result.Message);
-                            else {
-                            }
-                        } else {
-                            if (p.error)
-                                p.error(result.Message);
-                            else {
-                            }
-                        }
-                    },
-                    error: function (result, b) {
-                    }
-                });
-            };
+            function loadFilter(result) {
+                //如果加载的数据不需要筛选，就可以不加这个代码
+                return result.rows;
+            }
+          
     </script>
 </body>
 </html>
