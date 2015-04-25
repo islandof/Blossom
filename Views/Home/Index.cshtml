@@ -1,21 +1,29 @@
 ﻿@{
     ViewBag.Title = "Home Page";
 }
+<style type="text/css">
+    #demo,#hdemo {
+        background: #FFF;
+        overflow: hidden;
+        border: 1px dashed #CCC;
+        width: 500px;
+    }
+
+    #demo img,#hdemo img {
+        border: 3px solid #F2F2F2;
+    }
+
+    #indemo,#hindemo {
+        width: 800%;
+    }
+
+    #indemo, #demo1, #demo2,#hindemo, #hdemo1, #hdemo2 {
+        float: left;
+    }
+</style>
+@Scripts.Render("~/bundles/jquery")
 @section featured {
     <section class="featured">
-        @*<div class="content-wrapper">
-            <hgroup class="title">
-                <h1>@ViewBag.Title.</h1>
-                <h2>@ViewBag.Message</h2>
-            </hgroup>
-            <p>
-                To learn more about ASP.NET MVC visit
-                <a href="http://asp.net/mvc" title="ASP.NET MVC Website">http://asp.net/mvc</a>.
-                The page features <mark>videos, tutorials, and samples</mark> to help you get the most from ASP.NET MVC.
-                If you have any questions about ASP.NET MVC visit
-                <a href="http://forums.asp.net/1146.aspx/1?MVC" title="ASP.NET MVC Forum">our forums</a>.
-            </p>
-        </div>*@
         <div class="content-wrapper">
             <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0" width="953" height="307">
                 <param name="movie" value="img/index.swf" />
@@ -26,28 +34,89 @@
 
     </section>
 }
-<h3>We suggest the following:</h3>
+<h3>推荐产品:</h3>
 <ol class="round">
-    <li class="one">
-        <h5>Getting Started</h5>
-        ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-        enables a clean separation of concerns and that gives you full control over markup
-        for enjoyable, agile development. ASP.NET MVC includes many features that enable
-        fast, TDD-friendly development for creating sophisticated applications that use
-        the latest web standards.
-        <a href="http://go.microsoft.com/fwlink/?LinkId=245151">Learn more…</a>
+    <li>
+        <h5>最新单品</h5>
+        <div id="demo" style="width: 95%">
+            <div id="indemo">
+                <div id="demo1">                    
+                </div>
+                <div id="demo2"></div>
+            </div>
+        </div>
     </li>
 
-    <li class="two">
-        <h5>Add NuGet packages and jump-start your coding</h5>
-        NuGet makes it easy to install and update free libraries and tools.
-        <a href="http://go.microsoft.com/fwlink/?LinkId=245153">Learn more…</a>
-    </li>
-
-    <li class="three">
-        <h5>Find Web Hosting</h5>
-        You can easily find a web hosting company that offers the right mix of features
-        and price for your applications.
-        <a href="http://go.microsoft.com/fwlink/?LinkId=245157">Learn more…</a>
+    <li>
+        <h5>热销产品</h5>
+        <div id="hdemo" style="width: 95%">
+            <div id="hindemo">
+                <div id="hdemo1">
+                </div>
+                <div id="hdemo2"></div>
+            </div>
+        </div>
     </li>
 </ol>
+
+<script type="text/javascript">
+    var speed = 15;
+
+var tab=document.getElementById("demo");
+var tab1=document.getElementById("demo1");
+var tab2 = document.getElementById("demo2");
+
+var htab = document.getElementById("hdemo");
+var htab1 = document.getElementById("hdemo1");
+var htab2 = document.getElementById("hdemo2");
+
+
+$(function () {
+    $.post("/home/GetProducts", {}, function (data, textStatus, jqXhr) {        
+        if (typeof data.rows != "undefined") {
+            for (var i = 0; i < data.rows.length; i++) {
+                if (data.rows[i].Icon != "") {
+                    if (data.rows[i].Type == "0") {
+                        $("#demo1").append(' <a href="#"><img src="/UploadFile/' + data.rows[i].Icon + '" border="0"/></a>');
+                    }
+                    if (data.rows[i].Type == "1") {
+                        $("#hdemo1").append(' <a href="#"><img src="/UploadFile/' + data.rows[i].Icon + '" border="0"/></a>');
+                    }
+                }
+            }
+        }
+
+        tab2.innerHTML = tab1.innerHTML;
+
+        htab2.innerHTML = htab1.innerHTML;
+
+        var myMar = setInterval(Marquee, speed);
+
+        var hmyMar = setInterval(hMarquee, speed);
+
+        tab.onmouseover = function () { clearInterval(myMar) };
+        tab.onmouseout = function () { myMar = setInterval(Marquee, speed) };
+
+        htab.onmouseover = function () { clearInterval(hmyMar) };
+        htab.onmouseout = function () { hmyMar = setInterval(hMarquee, speed) };
+    });
+});
+
+function Marquee() {
+    if (tab2.offsetWidth - tab.scrollLeft <= 0)
+        tab.scrollLeft -= tab1.offsetWidth;
+    else {
+        tab.scrollLeft++;
+    }
+}
+
+function hMarquee() {    
+
+    if (htab2.offsetWidth - htab.scrollLeft <= 0)
+        htab.scrollLeft -= htab1.offsetWidth;
+    else {
+        htab.scrollLeft++;
+    }
+}
+
+</script> 

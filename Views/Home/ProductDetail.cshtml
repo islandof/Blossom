@@ -1,0 +1,52 @@
+﻿@{
+    ViewBag.Title = "ProductDetail";
+}
+
+<div class="content-wrapper">
+    @if (ViewBag.Firstimg != "undefined" && ViewBag.Firstimg != null && ViewBag.Firstimg != "")
+    {
+        <div>
+            <img src="/UploadFile/@ViewBag.Firstimg"/>
+        </div>
+    }
+    <div style="height: 10px;">
+        <span>-------------------------------</span><br/>
+    </div>
+    @if (ViewBag.Secondimg != "undefined" && ViewBag.Secondimg != null && ViewBag.Secondimg != "")
+    {
+        <div>
+            <img src="/UploadFile/@ViewBag.Secondimg"/>
+        </div>
+    }
+    @if (ViewBag.Thirdimg != "undefined" && ViewBag.Thirdimg != null && ViewBag.Thirdimg != "")
+    {
+        <div>
+            <img src="/UploadFile/@ViewBag.Thirdimg"/>
+        </div>
+    }
+    @if (ViewBag.Forthimg != "undefined" && ViewBag.Forthimg != null && ViewBag.Forthimg != "")
+    {
+        <div>
+            <img src="/UploadFile/@ViewBag.Forthimg"/>
+        </div>
+    }
+    @if (ViewBag.Fifthimg != "undefined" && ViewBag.Fifthimg != null && ViewBag.Fifthimg != "")
+    {
+        <div>
+            <img src="/UploadFile/@ViewBag.Fifthimg"/>
+        </div>
+    }
+    @if (ViewBag.Sixthimg != "undefined" && ViewBag.Sixthimg != null && ViewBag.Sixthimg != "")
+    {
+        <div>
+            <img src="/UploadFile/@ViewBag.Sixthimg"/>
+        </div>
+    }
+    @if (ViewBag.Seventhimg != "undefined" && ViewBag.Seventhimg != null  && ViewBag.Seventhimg != "")
+    {
+        <div>
+            <img src="/UploadFile/@ViewBag.Seventhimg"/>
+        </div>
+    }
+
+</div>

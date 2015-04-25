@@ -37,6 +37,7 @@ namespace BlossomWeb.Controllers
             var myadapter = new OleDbDataAdapter(sql, conn);
             var dt = new DataTable();
             myadapter.Fill(dt);
+            conn.Close();
 
             return this.JsonFormat(new EasyUIGrid
             {
@@ -73,7 +74,7 @@ namespace BlossomWeb.Controllers
                 }
             }
 
-            string[] imglist = new string[4];
+            string[] imglist = new string[8];
             for(var i =0;i<Request.Files.Count;i++)
             {
                 var file = Request.Files[i];
@@ -91,13 +92,21 @@ namespace BlossomWeb.Controllers
             {
                 sql = "update products set Cnname = '" + Request.Form["Cnname"] + "', Enname = '" +
                       Request.Form["Enname"] + "', _parentId = '" + Request.Form["_parentId"] + "', Icon = '" +
-                      imglist[0] + "', Firstimg = '" + imglist[1] + "', Secondimg = '" + imglist[2] + "', Thirdimg = '" +
-                      imglist[3] + "' where ID = " + Request["ID"];
+                      (imglist[0].IsNullOrWhiteSpace() ? Request.Form["Icon"] : imglist[0]) + 
+                      "', Firstimg = '" + (imglist[1].IsNullOrWhiteSpace() ? Request.Form["Firstimg"] : imglist[1]) + 
+                      "', Secondimg = '" + (imglist[2].IsNullOrWhiteSpace() ? Request.Form["Secondimg"] : imglist[2]) + 
+                      "', Thirdimg = '" + (imglist[3].IsNullOrWhiteSpace() ? Request.Form["Thirdimg"] : imglist[3]) +
+                      "', Forthimg = '" + (imglist[4].IsNullOrWhiteSpace() ? Request.Form["Forthimg"] : imglist[4]) +
+                      "', Fifthimg = '" + (imglist[5].IsNullOrWhiteSpace() ? Request.Form["Fifthimg"] : imglist[5]) +
+                      "', Sixthimg = '" + (imglist[6].IsNullOrWhiteSpace() ? Request.Form["Sixthimg"] : imglist[6]) +
+                      "', Seventhimg = '" + (imglist[7].IsNullOrWhiteSpace() ? Request.Form["Seventhimg"] : imglist[7]) + 
+                      "', Type = '" +Request.Form["Type"] + "' where ID = " + Request["ID"];
             }
             else
             {
-                sql = "insert into Products (Cnname,Enname,_parentId,Icon,Firstimg,Secondimg,Thirdimg) values( '" + Request.Form["Cnname"] + "', '" +
-                  Request.Form["Enname"] + "', '" + Request.Form["_parentId"] + "', '" + imglist[0] + "', '" + imglist[1] + "', '" + imglist[2] + "', '" + imglist[3] + "' )";    
+                sql = "insert into Products (Cnname,Enname,_parentId,Icon,Firstimg,Secondimg,Thirdimg,Forthimg,Fifthimg,Sixthimg,Seventhimg,Type) values( '" + Request.Form["Cnname"] + "', '" +
+                  Request.Form["Enname"] + "', '" + Request.Form["_parentId"] + "', '" + imglist[0] + "', '" + imglist[1] + "', '" + imglist[2] + "', '" + imglist[3] + "', '" + imglist[4] + 
+                  "', '" + imglist[5] + "', '" + imglist[6] + "', '" + imglist[7] + "', '" + Request.Form["Type"] + "' )";    
             }
             
             var conn = new OleDbConnection(ConnStr1);
@@ -121,22 +130,46 @@ namespace BlossomWeb.Controllers
             var myadapter = new OleDbDataAdapter(sql, conn);
             var dt = new DataTable();
             myadapter.Fill(dt);
-
+            conn.Close();
             return this.JsonFormat(dt);
         }
 
         public ActionResult DeleteProduct()
         {
-            var sql = "Delete from  Products where ID = " + Request["ID"];
-
             var conn = new OleDbConnection(ConnStr1);
-
             conn.Open();
 
-            var cmd = new OleDbCommand(sql, conn);
-            cmd.ExecuteNonQuery();
-            conn.Close();
+            var sql = "select * from Products where [_parentId] = '" + Request["ID"] + "' ";
+            var myadapter = new OleDbDataAdapter(sql, conn);
+            var dt = new DataTable();
+            myadapter.Fill(dt);
+
+            if (dt.Rows.Count == 0)
+            {
+                sql = "Delete from  Products where ID = " + Request["ID"];
+                var cmd = new OleDbCommand(sql, conn);
+                cmd.ExecuteNonQuery();
+                conn.Close();
+            }
+            else
+            {
+                return this.JsonFormat("不能删除，此项包含子元素，要删除前，请先删除子元素");
+            }
+            
             return this.JsonFormat("");
+        }
+
+        public ActionResult ProductDetail()
+        {
+            ViewBag.Firstimg = Request["Firstimg"];
+            ViewBag.Secondimg = Request["Secondimg"];
+            ViewBag.Thirdimg = Request["Thirdimg"];
+            ViewBag.Forthimg = Request["Forthimg"];
+            ViewBag.Fifthimg = Request["Fifthimg"];
+            ViewBag.Sixthimg = Request["Sixthimg"];
+            ViewBag.Seventhimg = Request["Seventhimg"];
+
+            return View();
         }
 
         public ActionResult About()
@@ -156,6 +189,19 @@ namespace BlossomWeb.Controllers
         public ActionResult ProductList()
         {
             return View();
+        }
+        
+        public ActionResult LoginSumit()
+        {
+            if (Request["username"] == "admin" && Request["pwd"] == "111111")
+            {
+                return this.JsonFormat("../home/ProductList");
+            }
+            else
+            {
+                return this.JsonFormat("用户名和密码错误，请重新输入");
+            }
+                 
         }
     }
 }

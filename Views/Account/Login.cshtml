@@ -17,33 +17,50 @@
     <fieldset>
         <legend>Log in Form</legend>
         <ol>
-            <li>
-                @Html.LabelFor(m => m.UserName)
-                @Html.TextBoxFor(m => m.UserName)
-                @Html.ValidationMessageFor(m => m.UserName)
+            <li>                
+                <label>用户名</label>
+                <input id="username" type="text"/>
             </li>
             <li>
-                @Html.LabelFor(m => m.Password)
-                @Html.PasswordFor(m => m.Password)
-                @Html.ValidationMessageFor(m => m.Password)
-            </li>
-            <li>
-                @Html.CheckBoxFor(m => m.RememberMe)
-                @Html.LabelFor(m => m.RememberMe, new { @class = "checkbox" })
+                <label>密码</label>
+                <input id="pwd" type="password" />                
             </li>
         </ol>
-        <input type="submit" value="Log in" />
+        <input type="button" onclick="LoginSumit()" value="登 陆" />
     </fieldset>
-    <p>
+    @*<p>
         @Html.ActionLink("Register", "Register") if you don't have an account.
-    </p>
+    </p>*@
 }
 </section>
 
 <section class="social" id="socialLoginForm">
     <h2>Use another service to log in.</h2>
-    @Html.Action("ExternalLoginsList", new { ReturnUrl = ViewBag.ReturnUrl })
+    @*@Html.Action("ExternalLoginsList", new { ReturnUrl = ViewBag.ReturnUrl })*@
 </section>
+<script type="text/javascript">
+    function LoginSumit() {
+        if ($("#username").val() == "") {
+            alert("请输入用户名");
+            $("#username").focus();
+            return false;
+        }
+        if ($("#pwd").val() == "") {
+            alert("请输入密码");
+            $("#pwd").focus();
+            return false;
+        }
+
+        $.post("/Home/LoginSumit?username=" + $("#username").val() + "&pwd=" + $("#pwd").val(), {}, function (data, textStatus, jqXhr) {
+            if (data.indexOf("用户名和密码错误") > -1) {
+                alert(data);
+                return false;
+            } 
+            setTimeout('javascript:location.href="'+data+'"', 500);
+
+        });
+    }
+</script>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

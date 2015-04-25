@@ -3,8 +3,8 @@
 }
 
 @*<h2>Products</h2>*@
-<div style="padding: 5px; float: left;width: 27%">        
-    <table id="tg" class="easyui-treegrid" title="产品列表" style="width:97%;height:800px"
+<div style="float: left; padding: 0px; width: 27%">
+    <table id="tg" class="easyui-treegrid" title="产品列表" style="height: 800px; width: 97%;"
            data-options="
                 showHeader:false,
 				rownumbers: false,
@@ -17,53 +17,196 @@
                 onClickRow: ClickRow
 			">
         <thead>
-            <tr style="height: 40px">
-                <th data-options="field:'Cnname',width:150,align:'left'">中文名</th>
-            </tr>
+        <tr style="height: 40px">
+            <th data-options="field:'Cnname',width:150,align:'left',formatter:formatClosed">中文名</th>
+        </tr>
         </thead>
     </table>
 
 </div>
-<div style="float: right; width: 70%; height: 800px">
+<div style="float: right; height: 800px; width: 70%;">
+    <div>        
+        <input class="easyui-textbox" type="text" style="height: 24px" id="keyvalue"/>
+        <a class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="Search()">查询 </a>    
+    </div>
+    
     <table width="95%" id="rightTable">
     </table>
+    <div>
+        <div style="float: right">
+            <a id="page"></a><a onclick=" jumpPage(0) " style="font-size: medium;">
+                <b>&nbsp;首页&nbsp;</b>
+            </a><a onclick=" jumpPage(1) ">上一页</a><a onclick=" jumpPage(2) ">下一页</a><a onclick=" jumpPage(3) " style="font-size: medium;">
+                <b>&nbsp;末页&nbsp;</b>
+            </a><a id="count"></a>
+        </div>
+    </div>
 </div>
 
 @Styles.Render("~/Content/easyuicssdetail")
 @Scripts.Render("~/bundles/jquery")
-@Scripts.Render("~/bundles/jeasyuidetail")
-<script src="@Url.Content("~/Scripts/jquery-easyui-1.4/jquery.easyui.min.js")" type="text/javascript"></script>
 <script src="@Url.Content("~/Scripts/jquery-easyui-1.4/jquery.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery-easyui-1.4/jquery.easyui.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery-easyui-1.4/locale/easyui-lang-zh_CN.js")" type="text/javascript"></script>
 
 <script type="text/javascript" defer="defer">
-    var productData; 
-    $(function () {
+    var productData;
+    var currentData = [];
+    var z = 0;
+    var pageno = 1;
+    var pagecount = 0;
+    $(function() {
         $.post("/home/GetProducts", {}, function(data, textStatus, jqXhr) {
             productData = data;
             if (typeof data.rows != "undefined") {
                 for (var i = 0; i < data.rows.length; i++) {
                     if (data.rows[i].Icon != "") {
-                        $("#rightTable").append('<tr><td style="width: 140px"><img src="/UploadFile/' + data.rows[i].Icon + '" /></td><td><a style="font-size: x-large;">' + data.rows[i].Cnname + '</a><br /><br /><br /><br /><br /></td></tr>');
+                        z++;
+                        if (z < 6) {
+                            $("#rightTable").append("<tr><td style=\"width: 140px\"><img src=\"/UploadFile/" + data.rows[i].Icon + "\" /></td><td><a href=" + "ProductDetail?Firstimg=" + data.rows[i].Firstimg + "&Secondimg=" + data.rows[i].Secondimg + "&Thirdimg=" + data.rows[i].Thirdimg +
+                                "&Forthimg=" + data.rows[i].Forthimg + "&Fifthimg=" + data.rows[i].Fifthimg + "&Sixthimg=" + data.rows[i].Sixthimg + "&Seventhimg=" + data.rows[i].Seventhimg + " style=\"font-size: x-large;\">" + data.rows[i].Cnname + "</a><br /><br /><br /><br /><br /></td></tr>");
+                        }
+                        currentData.push(data.rows[i]);
                     }
                 }
             }
 
+            changespan(z, 1);
         });
     });
 
     function ClickRow(row) {
         if (row.Icon != "") {
             $("#rightTable").html("");
-            $("#rightTable").append('<tr><td style="width: 140px"><img src="/UploadFile/' + row.Icon + '" /></td><td><a style="font-size: x-large;">' + row.Cnname + '</a><br /><br /><br /><br /><br /></td></tr>');
+            $("#rightTable").append("<tr><td style=\"width: 140px\"><img src=\"/UploadFile/" + row.Icon + "\" /></td><td><a style=\"font-size: x-large;\">" + row.Cnname + "</a><br /><br /><br /><br /><br /></td></tr>");
+            changespan(1, 1);
         } else {
             $("#rightTable").html("");
+            z = 0;
+            currentData = [];
             for (var j = 0; j < productData.rows.length; j++) {
-                if (productData.rows[j]._parentId == row.ID && productData.rows[j].Icon != "") {                    
-                    $("#rightTable").append('<tr><td style="width: 140px"><img src="/UploadFile/' + productData.rows[j].Icon + '" /></td><td><a style="font-size: x-large;">' + productData.rows[j].Cnname + '</a><br /><br /><br /><br /><br /></td></tr>');
+                if (productData.rows[j]._parentId == row.ID && productData.rows[j].Icon != "") {
+                    z++;
+                    if (z < 6) {
+                        $("#rightTable").append("<tr><td style=\"width: 140px\"><img src=\"/UploadFile/" + productData.rows[j].Icon + "\" /></td><td><a style=\"font-size: x-large;\">" + productData.rows[j].Cnname + "</a><br /><br /><br /><br /><br /></td></tr>");
+                    }
+                    currentData.push(productData.rows[j]);
                 }
             }
+            pageno = 1;
+            changespan(currentData.length, 1);
         }
     }
 
-    
+    function formatClosed(value, row) {
+        if (row.Icon != "") {
+
+        }
+        return value;
+    }
+
+    //跳转
+    //0首页，1上一面，2下一页，3末页
+    function jumpPage(value) {
+        z = 0;
+
+        if (value == 0) {
+            pageno = 1;
+            $("#rightTable").html("");
+            for (var i = 0; i < currentData.length; i++) {
+                if (currentData[i].Icon != "") {
+                    z++;
+                    if (z < 6) {
+                        $("#rightTable").append("<tr><td style=\"width: 140px\"><img src=\"/UploadFile/" + currentData[i].Icon + "\" /></td><td><a href=" + "ProductDetail?Firstimg=" + currentData[i].Firstimg + "&Secondimg=" + currentData[i].Secondimg + "&Thirdimg=" + currentData[i].Thirdimg +
+                            "&Forthimg=" + currentData[i].Forthimg + "&Fifthimg=" + currentData[i].Fifthimg + "&Sixthimg=" + currentData[i].Sixthimg + "&Seventhimg=" + currentData[i].Seventhimg + " style=\"font-size: x-large;\">" + currentData[i].Cnname + "</a><br /><br /><br /><br /><br /></td></tr>");
+                    }
+                }
+            }
+            changespan(currentData.length, 1);
+        }
+
+        if (value == 1) {
+            if (pageno - 1 > 0) {
+                --pageno;
+                $("#rightTable").html("");
+                for (var i = 0; i < currentData.length; i++) {
+                    if (currentData[i].Icon != "") {
+                        z++;
+                        if (z <= pageno * 5 && z > (pageno - 1) * 5) {
+                            $("#rightTable").append("<tr><td style=\"width: 140px\"><img src=\"/UploadFile/" + currentData[i].Icon + "\" /></td><td><a href=" + "ProductDetail?Firstimg=" + currentData[i].Firstimg + "&Secondimg=" + currentData[i].Secondimg + "&Thirdimg=" + currentData[i].Thirdimg +
+                                "&Forthimg=" + currentData[i].Forthimg + "&Fifthimg=" + currentData[i].Fifthimg + "&Sixthimg=" + currentData[i].Sixthimg + "&Seventhimg=" + currentData[i].Seventhimg + " style=\"font-size: x-large;\">" + currentData[i].Cnname + "</a><br /><br /><br /><br /><br /></td></tr>");
+                        }
+                    }
+                }
+
+                changespan(currentData.length, pageno);
+            }
+        }
+
+        if (value == 2) {
+            if (pageno + 1 <= pagecount) {
+                $("#rightTable").html("");
+                for (var i = 0; i < currentData.length; i++) {
+                    if (currentData[i].Icon != "") {
+                        z++;
+                        if (z > pageno * 5 && z <= (pageno + 1) * 5) {
+                            $("#rightTable").append("<tr><td style=\"width: 140px\"><img src=\"/UploadFile/" + currentData[i].Icon + "\" /></td><td><a href=" + "ProductDetail?Firstimg=" + currentData[i].Firstimg + "&Secondimg=" + currentData[i].Secondimg + "&Thirdimg=" + currentData[i].Thirdimg +
+                                "&Forthimg=" + currentData[i].Forthimg + "&Fifthimg=" + currentData[i].Fifthimg + "&Sixthimg=" + currentData[i].Sixthimg + "&Seventhimg=" + currentData[i].Seventhimg + " style=\"font-size: x-large;\">" + currentData[i].Cnname + "</a><br /><br /><br /><br /><br /></td></tr>");
+                        }
+                    }
+                }
+                ++pageno;
+                changespan(currentData.length, pageno);
+            }
+        }
+
+        if (value == 3) {
+            pageno = pagecount;
+            $("#rightTable").html("");
+            for (var i = 0; i < currentData.length; i++) {
+                if (currentData[i].Icon != "") {
+                    z++;
+                    if (z <= pageno * 5 && z > (pageno - 1) * 5) {
+                        $("#rightTable").append("<tr><td style=\"width: 140px\"><img src=\"/UploadFile/" + currentData[i].Icon + "\" /></td><td><a href=" + "ProductDetail?Firstimg=" + currentData[i].Firstimg + "&Secondimg=" + currentData[i].Secondimg + "&Thirdimg=" + currentData[i].Thirdimg +
+                            "&Forthimg=" + currentData[i].Forthimg + "&Fifthimg=" + currentData[i].Fifthimg + "&Sixthimg=" + currentData[i].Sixthimg + "&Seventhimg=" + currentData[i].Seventhimg + " style=\"font-size: x-large;\">" + currentData[i].Cnname + "</a><br /><br /><br /><br /><br /></td></tr>");
+                    }
+                }
+                changespan(currentData.length, pageno);
+            }
+        }
+
+    }
+
+    function changespan(total, pageno) {
+        $("#count").html("共" + total + "条记录");
+        pagecount = parseInt(total / 5);
+        var pagerest = total % 5;
+        if (pagerest != 0) {
+            pagecount++;
+        }
+        $("#page").html(pageno + "/" + pagecount + "页");
+    }
+
+    function Search() {
+        
+        z = 0;
+        currentData = [];
+        $("#rightTable").html("");
+        if (typeof productData.rows != "undefined") {
+            for (var i = 0; i < productData.rows.length; i++) {                
+                if (productData.rows[i].Icon != "" && productData.rows[i].Cnname.toLowerCase().indexOf($("#keyvalue").val().toLowerCase()) > -1) {
+                    z++;
+                    if (z < 6) {
+                        $("#rightTable").append("<tr><td style=\"width: 140px\"><img src=\"/UploadFile/" + productData.rows[i].Icon + "\" /></td><td><a href=" + "ProductDetail?Firstimg=" + productData.rows[i].Firstimg + "&Secondimg=" + productData.rows[i].Secondimg + "&Thirdimg=" + productData.rows[i].Thirdimg +
+                            "&Forthimg=" + productData.rows[i].Forthimg + "&Fifthimg=" + productData.rows[i].Fifthimg + "&Sixthimg=" + productData.rows[i].Sixthimg + "&Seventhimg=" + productData.rows[i].Seventhimg + " style=\"font-size: x-large;\">" + productData.rows[i].Cnname + "</a><br /><br /><br /><br /><br /></td></tr>");
+                    }
+                    currentData.push(productData.rows[i]);
+                }
+                                
+            }
+        }
+        changespan(z, 1);
+        
+    }
+
 </script>

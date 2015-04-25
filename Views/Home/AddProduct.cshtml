@@ -7,10 +7,10 @@
 <head>
     <title>添加修改产品列表</title>
     @Styles.Render("~/Content/easyuicssdetail")
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/jeasyuidetail")
+    @Scripts.Render("~/bundles/jquery")           
     <script src="@Url.Content("~/Scripts/jquery-easyui-1.4/jquery.min.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Scripts/jquery-easyui-1.4/jquery.easyui.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery-easyui-1.4/locale/easyui-lang-zh_CN.js")" type="text/javascript"></script>
 </head>
 <body>
     <div style="margin: auto auto; text-align: left;">
@@ -59,9 +59,41 @@
                     </div>
                     <div>
                         <label>第三张:</label>
-                        <input class="textbox" name="Thirdimg" readonly="readonly"/><br />
-<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-                        <input class="easyui-filebox" name="Thirdimg1" />
+                        <input class="textbox" name="Thirdimg" readonly="readonly"/><br/>
+                        <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                        <input class="easyui-filebox" name="Thirdimg1"/>
+                    </div>
+                    <div>
+                        <label>第四张:</label>
+                        <input class="textbox" name="Forthimg" readonly="readonly"/><br/>
+                        <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                        <input class="easyui-filebox" name="Forthimg1"/>
+                    </div>
+                    <div>
+                        <label>第五张:</label>
+                        <input class="textbox" name="Fifthimg" readonly="readonly"/><br/>
+                        <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                        <input class="easyui-filebox" name="Fifthimg1"/>
+                    </div>
+                    <div>
+                        <label>第六张:</label>
+                        <input class="textbox" name="Sixthimg" readonly="readonly"/><br/>
+                        <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                        <input class="easyui-filebox" name="Sixthimg1"/>
+                    </div>
+                    <div>
+                        <label>第七张:</label>
+                        <input class="textbox" name="Seventhimg" readonly="readonly" /><br />
+                        <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                        <input class="easyui-filebox" name="Seventhimg1" />
+                    </div>
+                    <div>
+                        <label>类型&nbsp;&nbsp;&nbsp;:</label>
+                        <select name="Type" style="width: 100px" class="easyui-combobox" data-options="panelHeight:70">
+                            <option value="">无</option>
+                            <option value="0">最新单品</option>
+                            <option value="1">热销产品</option>
+                        </select>
                     </div>
                     <input type="hidden" name="ID" value="" />
                 </form>

@@ -4,7 +4,6 @@
 
 <h2>ProductList</h2>
 <a id="btn" class="easyui-linkbutton" data-options="iconCls:'icon-add'" style="width: 200px;"  onclick="AddItem()">添加产品 </a>
-
 <table id="tg" class="easyui-treegrid" title="产品列表" style="width:90%;height:600px"
        data-options="
                 showHeader:false,
@@ -22,6 +21,7 @@
             <th data-options="field:'ID',width:30">ID</th>
             <th data-options="field:'Cnname',width:200,align:'left'">中文名</th>
             <th data-options="field:'Enname',width:140">英文名</th>
+            <th data-options="field:'Type',width:140,align:'center',formatter:formatType">类型</th>
             <th data-options="field:'Edit',width:80,align:'center',formatter:formatEdit">修改</th>
             <th data-options="field:'Delete',width:80,align:'center',formatter:formatDelete">删除</th>
         </tr>
@@ -29,9 +29,9 @@
 </table>
 @Styles.Render("~/Content/easyuicssdetail")
 @Scripts.Render("~/bundles/jquery")
-@Scripts.Render("~/bundles/jeasyuidetail")
 <script src="@Url.Content("~/Scripts/jquery-easyui-1.4/jquery.min.js")" type="text/javascript"></script>
 <script src="@Url.Content("~/Scripts/jquery-easyui-1.4/jquery.easyui.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery-easyui-1.4/locale/easyui-lang-zh_CN.js")" type="text/javascript"></script>
 
 <script type="text/javascript" defer="defer">
     function formatEdit() {
@@ -41,22 +41,35 @@
     function formatDelete() {
         return '<span style="color:Red">删除</span>';
     }
-
+    function formatType(value) {
+        if (value == "0") {
+            return '<span style="color:green">最新单品</span>';
+        }
+        if (value == "1") {
+            return '<span style="color:red">热销产品</span>';
+        }
+    }
 
 
     function ClickCell(field, row) {
         if (field == "Edit") {
             //alert("Add");
-            window.open('AddProduct?ID='+row.ID, 'newwindow', 'height=400, width=600, top=100, left=200, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no');
+            window.open('AddProduct?ID='+row.ID, 'newwindow', 'height=550, width=600, top=100, left=200, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no');
         }
         if (field == "Delete") {            
             $.post("/home/DeleteProduct?ID=" + row.ID, {}, function (data, textStatus, jqXhr) {
-                alert("删除成功");                
+                if (data == "") {
+                    alert("删除成功");
+                    window.location.reload();
+                } else {
+                    alert(data);                    
+                }
+                
             });
         }
     }
 
     function AddItem() {
-            window.open('AddProduct', 'newwindow', 'height=400, width=600, top=100, left=200, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no');
+            window.open('AddProduct', 'newwindow', 'height=550, width=600, top=100, left=200, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no');
     }
 </script>
